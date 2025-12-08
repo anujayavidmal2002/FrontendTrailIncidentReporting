@@ -45,7 +45,7 @@ export default function FundTheTrail({ onBack }) {
           </div>
 
           <p className="text-gray-600 mb-8">
-            Your contribution helps maintain and improve the Pekoe Trail,
+            Your contribution helps maintain and improve the Smart Trail,
             supports local communities, and protects this unique natural and
             cultural heritage.
           </p>

@@ -62,7 +62,7 @@ export default function TrailPolicies({ onBack }) {
 
           <p className="text-gray-600 mb-8">
             Please follow these guidelines to ensure a safe, enjoyable, and
-            sustainable experience for everyone on the Pekoe Trail.
+            sustainable experience for everyone on the Smart Trail.
           </p>
 
           <div className="space-y-6">

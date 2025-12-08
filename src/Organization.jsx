@@ -17,7 +17,7 @@ export default function Organization({ onBack }) {
           <div className="flex items-center gap-3 mb-6">
             <Building2 className="text-green-600" size={32} />
             <h1 className="text-3xl font-bold text-green-900">
-              The Pekoe Trail Organization
+              The Smart Trail Organization
             </h1>
           </div>
 
@@ -26,7 +26,7 @@ export default function Organization({ onBack }) {
               Our Mission
             </h2>
             <p className="text-gray-600 mb-4">
-              The Pekoe Trail is Sri Lanka's first long-distance hiking trail,
+              The Smart Trail is Sri Lanka's first long-distance hiking trail,
               stretching over 300 kilometers through the heart of the country's
               stunning tea country. Our organization is dedicated to developing
               and maintaining this trail while supporting local communities and

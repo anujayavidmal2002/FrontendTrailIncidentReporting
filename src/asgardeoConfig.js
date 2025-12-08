@@ -5,10 +5,10 @@
 
 const asgardeoConfig = {
   clientID:
-    process.env.REACT_APP_ASGARDEO_CLIENT_ID || "590XssITFAfLhfCX_Qwovmeit5Ua",
+    process.env.REACT_APP_ASGARDEO_CLIENT_ID || "u2yvUONka0RYJ5NE7sPTuNOP6Xoa",
   baseUrl:
     process.env.REACT_APP_ASGARDEO_BASE_URL ||
-    "https://api.asgardeo.io/t/trekincident",
+    "https://api.asgardeo.io/t/trekincidents",
   signInRedirectURL:
     process.env.REACT_APP_ASGARDEO_REDIRECT_URL || window.location.origin,
   signOutRedirectURL:

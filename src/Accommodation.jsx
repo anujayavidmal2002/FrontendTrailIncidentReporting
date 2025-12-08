@@ -47,7 +47,7 @@ export default function Accommodation({ onBack }) {
           </div>
 
           <p className="text-gray-600 mb-8">
-            Find comfortable places to stay along the Pekoe Trail. From cozy
+            Find comfortable places to stay along the Smart Trail. From cozy
             homestays to boutique hotels, rest well after your day's adventure.
           </p>
 

@@ -7,6 +7,7 @@ const LoginPage = ({ onLoginSuccess, authenticated }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [clearingSession, setClearingSession] = useState(false);
+  const [alreadyProcessed, setAlreadyProcessed] = useState(false);
 
   // Check on mount if we need to clear automatic authentication
   useEffect(() => {
@@ -47,14 +48,15 @@ const LoginPage = ({ onLoginSuccess, authenticated }) => {
   // Only notify parent when authenticated AND user manually logged in
   useEffect(() => {
     const manualLogin = sessionStorage.getItem('manual_login');
-    if (state?.isAuthenticated && user && onLoginSuccess && manualLogin === 'true') {
+    if (state?.isAuthenticated && user && onLoginSuccess && manualLogin === 'true' && !alreadyProcessed) {
       console.log("✅ User authenticated:", user);
+      setAlreadyProcessed(true);
       onLoginSuccess(user);
     } else if (state?.isAuthenticated && manualLogin !== 'true') {
       // If authenticated but no manual login flag, ignore it
       console.log("⚠️ Automatic authentication detected - ignoring. Please click login button.");
     }
-  }, [state?.isAuthenticated, user, onLoginSuccess]);
+  }, [state?.isAuthenticated, user, onLoginSuccess, alreadyProcessed]);
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -105,6 +107,11 @@ const LoginPage = ({ onLoginSuccess, authenticated }) => {
 
   // Only show welcome screen if authenticated AND manually logged in
   const manualLogin = sessionStorage.getItem('manual_login');
+  
+  // If we've already processed and notified parent, don't render anything
+  if (alreadyProcessed) {
+    return null; // Parent will handle rendering the main app
+  }
   
   // Never show welcome screen without manual login flag
   if (manualLogin !== 'true') {
@@ -166,7 +173,13 @@ const LoginPage = ({ onLoginSuccess, authenticated }) => {
             </div>
 
             <button
-              onClick={onLoginSuccess}
+              onClick={() => {
+                console.log("🔄 Continuing to dashboard...");
+                setAlreadyProcessed(true);
+                if (onLoginSuccess && user) {
+                  onLoginSuccess(user);
+                }
+              }}
               className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
             >
               Continue to Dashboard

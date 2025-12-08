@@ -44,12 +44,12 @@ export default function PekoeTrailStages({ onBack }) {
           <div className="flex items-center gap-3 mb-6">
             <MapPin className="text-green-600" size={32} />
             <h1 className="text-3xl font-bold text-green-900">
-              Pekoe Trail Stages
+              Smart Trail Stages
             </h1>
           </div>
 
           <p className="text-gray-600 mb-8">
-            The Pekoe Trail stretches over 300 kilometers through Sri Lanka's
+            The Smart Trail stretches over 300 kilometers through Sri Lanka's
             stunning tea country. Explore the different stages of this
             magnificent journey.
           </p>

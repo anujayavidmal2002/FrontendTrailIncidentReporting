@@ -163,18 +163,7 @@ export default function App() {
               onClick={() => setView(VIEWS.STAGES)}
             >
               <MapPin size={16} />
-              {navOpen && <span>Pekoe Trail Stages</span>}
-            </button>
-            <button
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition hover:bg-green-50 w-full mt-2 ${
-                view === VIEWS.ACCOMMODATION
-                  ? "bg-green-100 text-primary border border-green-200 shadow-sm"
-                  : "text-green-900"
-              }`}
-              onClick={() => setView(VIEWS.ACCOMMODATION)}
-            >
-              <Home size={16} />
-              {navOpen && <span>Accommodation</span>}
+              {navOpen && <span>Smart Trail Stages</span>}
             </button>
             <button
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition hover:bg-green-50 w-full mt-2 ${
@@ -207,7 +196,7 @@ export default function App() {
               onClick={() => setView(VIEWS.ORGANIZATION)}
             >
               <Building2 size={16} />
-              {navOpen && <span>The Pekoe Trail Organization</span>}
+              {navOpen && <span>The Smart Trail Organization</span>}
             </button>
           </div>
 

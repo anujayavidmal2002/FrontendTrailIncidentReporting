@@ -7,6 +7,7 @@ import {
   BadgeCheck,
   CalendarClock,
   CheckCircle,
+  User,
 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -69,6 +70,7 @@ function createCustomMarker(severity) {
 
 const STATUS_COLORS = {
   Open: "bg-amber-100 text-amber-800 border border-amber-300",
+  "In Progress": "bg-blue-100 text-blue-800 border border-blue-300",
   Resolved: "bg-green-100 text-green-800 border border-green-300",
 };
 
@@ -166,6 +168,7 @@ export default function AdminDashboard() {
   const [allIncidents, setAllIncidents] = useState([]);
   const [severity, setSeverity] = useState("All");
   const [incidentType, setIncidentType] = useState("All");
+  const [status, setStatus] = useState("All");
   const [loading, setLoading] = useState(true);
   const [updateloading, setUpdateloading] = useState(null);
   const [selectedIncidentId, setSelectedIncidentId] = useState(null);
@@ -216,7 +219,8 @@ export default function AdminDashboard() {
     const filtered = allIncidents.filter((i) => {
       const matchesSeverity = severity === "All" || i.severity === severity;
       const matchesType = incidentType === "All" || i.type === incidentType;
-      return matchesSeverity && matchesType;
+      const matchesStatus = status === "All" || i.status === status;
+      return matchesSeverity && matchesType && matchesStatus;
     });
 
     const sorted = filtered.sort((a, b) => {
@@ -330,6 +334,24 @@ export default function AdminDashboard() {
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
               <option value="High">High</option>
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs text-gray-600 mb-1 font-medium">
+              Status
+            </label>
+            <select
+              className="rounded border px-3 py-2 focus:outline-primary bg-white font-medium text-sm shadow-sm hover:border-green-500 transition"
+              value={status}
+              onChange={(e) => {
+                setStatus(e.target.value);
+                setSelectedIncidentId(null);
+              }}
+            >
+              <option value="All">All Status</option>
+              <option value="Open">Open</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
             </select>
           </div>
         </div>
@@ -461,6 +483,14 @@ export default function AdminDashboard() {
                 </span>
               </div>
 
+              {/* Reporter Section */}
+              {inc.reportedBy && (
+                <div className="flex items-center gap-2 text-sm text-gray-600 -mt-2">
+                  <User size={16} className="flex-shrink-0" />
+                  <span>Reported by: <span className="font-semibold text-gray-700">{inc.reportedBy}</span></span>
+                </div>
+              )}
+
               {/* Description Section */}
               <div className="text-gray-700 text-[15px] leading-relaxed border-l-2 border-gray-200 pl-4 py-1">
                 {inc.description}
@@ -528,23 +558,80 @@ export default function AdminDashboard() {
                   );
                 })()}
                 {inc.status === "Open" && (
-                  <button
-                    className="flex-1 min-w-[140px] px-5 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
-                    disabled={updateloading === inc.id}
-                    onClick={() => handleStatusChange(inc.id, "Resolved")}
-                  >
-                    {updateloading === inc.id ? (
-                      <>
-                        <CheckCircle size={18} className="animate-spin" />
-                        Updating...
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle size={18} />
-                        Mark Resolved
-                      </>
-                    )}
-                  </button>
+                  <>
+                    <button
+                      className="flex-1 min-w-[140px] px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
+                      disabled={updateloading === inc.id}
+                      onClick={() => handleStatusChange(inc.id, "In Progress")}
+                    >
+                      {updateloading === inc.id ? (
+                        <>
+                          <CheckCircle size={18} className="animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle size={18} />
+                          Mark In Progress
+                        </>
+                      )}
+                    </button>
+                    <button
+                      className="flex-1 min-w-[140px] px-5 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
+                      disabled={updateloading === inc.id}
+                      onClick={() => handleStatusChange(inc.id, "Resolved")}
+                    >
+                      {updateloading === inc.id ? (
+                        <>
+                          <CheckCircle size={18} className="animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle size={18} />
+                          Mark Resolved
+                        </>
+                      )}
+                    </button>
+                  </>
+                )}
+                {inc.status === "In Progress" && (
+                  <>
+                    <button
+                      className="flex-1 min-w-[140px] px-5 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
+                      disabled={updateloading === inc.id}
+                      onClick={() => handleStatusChange(inc.id, "Open")}
+                    >
+                      {updateloading === inc.id ? (
+                        <>
+                          <CheckCircle size={18} className="animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle size={18} />
+                          Reopen
+                        </>
+                      )}
+                    </button>
+                    <button
+                      className="flex-1 min-w-[140px] px-5 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
+                      disabled={updateloading === inc.id}
+                      onClick={() => handleStatusChange(inc.id, "Resolved")}
+                    >
+                      {updateloading === inc.id ? (
+                        <>
+                          <CheckCircle size={18} className="animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle size={18} />
+                          Mark Resolved
+                        </>
+                      )}
+                    </button>
+                  </>
                 )}
                 {inc.status === "Resolved" && (
                   <span className="flex-1 min-w-[140px] px-5 py-2.5 rounded-lg bg-green-100 text-green-800 text-sm font-semibold flex items-center justify-center gap-2 border-2 border-green-300">
