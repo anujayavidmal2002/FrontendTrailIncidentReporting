@@ -7,7 +7,6 @@ import {
   Menu,
   X,
   LogOut,
-  Home,
   FileText,
   DollarSign,
   MapPin,
@@ -17,7 +16,6 @@ import IncidentForm from "./IncidentForm";
 import AdminDashboard from "./AdminDashboard";
 import LoginPage from "./LoginPage";
 import PekoeTrailStages from "./PekoeTrailStages";
-import Accommodation from "./Accommodation";
 import TrailPolicies from "./TrailPolicies";
 import FundTheTrail from "./FundTheTrail";
 import Organization from "./Organization";
@@ -29,7 +27,6 @@ const VIEWS = {
   REPORT: "report",
   ADMIN: "admin",
   STAGES: "stages",
-  ACCOMMODATION: "accommodation",
   POLICIES: "policies",
   FUND: "fund",
   ORGANIZATION: "organization",
@@ -266,11 +263,6 @@ export default function App() {
           {view === VIEWS.STAGES && (
             <div className="animate-slideIn">
               <PekoeTrailStages onBack={() => setView(VIEWS.ADMIN)} />
-            </div>
-          )}
-          {view === VIEWS.ACCOMMODATION && (
-            <div className="animate-slideIn">
-              <Accommodation onBack={() => setView(VIEWS.ADMIN)} />
             </div>
           )}
           {view === VIEWS.POLICIES && (
