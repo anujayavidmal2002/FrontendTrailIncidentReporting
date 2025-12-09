@@ -487,7 +487,12 @@ export default function AdminDashboard() {
               {inc.reportedBy && (
                 <div className="flex items-center gap-2 text-sm text-gray-600 -mt-2">
                   <User size={16} className="flex-shrink-0" />
-                  <span>Reported by: <span className="font-semibold text-gray-700">{inc.reportedBy}</span></span>
+                  <span>
+                    Reported by:{" "}
+                    <span className="font-semibold text-gray-700">
+                      {inc.reportedBy}
+                    </span>
+                  </span>
                 </div>
               )}
 

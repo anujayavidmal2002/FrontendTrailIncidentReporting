@@ -1,22 +1,35 @@
 /**
  * Asgardeo SDK Configuration
  * Frontend-only OAuth2 authentication
+ *
+ * Uses window.config for runtime configuration (loaded from /config.js)
+ * Config file can be updated via Choreo ConfigMap without rebuilding the app
  */
 
+// Get runtime config from window.config (set by config.js file)
+const getRuntimeConfig = () => {
+  if (typeof window !== "undefined" && window.config) {
+    return window.config;
+  }
+  // Default config for local development (can be overridden by config.js)
+  return {
+    baseUrl: "https://api.asgardeo.io/t/trailincidents",
+    clientID: "ssebnfk92ztqREI0A8cI0qNy_o0a",
+    signInRedirectURL: window.location.origin,
+    signOutRedirectURL: window.location.origin,
+    resourceServerURL: "http://localhost:3001",
+  };
+};
+
+const config = getRuntimeConfig();
+
 const asgardeoConfig = {
-  clientID:
-    process.env.REACT_APP_ASGARDEO_CLIENT_ID || "u2yvUONka0RYJ5NE7sPTuNOP6Xoa",
-  baseUrl:
-    process.env.REACT_APP_ASGARDEO_BASE_URL ||
-    "https://api.asgardeo.io/t/trekincidents",
-  signInRedirectURL:
-    process.env.REACT_APP_ASGARDEO_REDIRECT_URL || window.location.origin,
-  signOutRedirectURL:
-    process.env.REACT_APP_ASGARDEO_REDIRECT_URL || window.location.origin,
+  clientID: config.clientID,
+  baseUrl: config.baseUrl,
+  signInRedirectURL: config.signInRedirectURL,
+  signOutRedirectURL: config.signOutRedirectURL,
   scope: ["openid", "profile", "email"],
-  resourceServerURLs: [
-    process.env.REACT_APP_API_URL || "http://localhost:3001",
-  ],
+  resourceServerURLs: [config.resourceServerURL],
   clockTolerance: 300,
   // Enable session management and proper logout
   enablePKCE: true,

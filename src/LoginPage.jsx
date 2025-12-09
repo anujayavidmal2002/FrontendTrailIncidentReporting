@@ -11,8 +11,8 @@ const LoginPage = ({ onLoginSuccess, authenticated }) => {
 
   // Check on mount if we need to clear automatic authentication
   useEffect(() => {
-    const manualLogin = sessionStorage.getItem('manual_login');
-    if ((state?.isAuthenticated || authenticated) && manualLogin !== 'true') {
+    const manualLogin = sessionStorage.getItem("manual_login");
+    if ((state?.isAuthenticated || authenticated) && manualLogin !== "true") {
       // User is authenticated but didn't manually log in
       // Force sign out to clear Asgardeo session
       console.log("⚠️ Automatic authentication detected - clearing session");
@@ -47,14 +47,22 @@ const LoginPage = ({ onLoginSuccess, authenticated }) => {
 
   // Only notify parent when authenticated AND user manually logged in
   useEffect(() => {
-    const manualLogin = sessionStorage.getItem('manual_login');
-    if (state?.isAuthenticated && user && onLoginSuccess && manualLogin === 'true' && !alreadyProcessed) {
+    const manualLogin = sessionStorage.getItem("manual_login");
+    if (
+      state?.isAuthenticated &&
+      user &&
+      onLoginSuccess &&
+      manualLogin === "true" &&
+      !alreadyProcessed
+    ) {
       console.log("✅ User authenticated:", user);
       setAlreadyProcessed(true);
       onLoginSuccess(user);
-    } else if (state?.isAuthenticated && manualLogin !== 'true') {
+    } else if (state?.isAuthenticated && manualLogin !== "true") {
       // If authenticated but no manual login flag, ignore it
-      console.log("⚠️ Automatic authentication detected - ignoring. Please click login button.");
+      console.log(
+        "⚠️ Automatic authentication detected - ignoring. Please click login button."
+      );
     }
   }, [state?.isAuthenticated, user, onLoginSuccess, alreadyProcessed]);
 
@@ -62,17 +70,19 @@ const LoginPage = ({ onLoginSuccess, authenticated }) => {
     setIsLoading(true);
     setError(null);
     try {
-      console.log("🔄 Initiating Asgardeo login with forced re-authentication...");
+      console.log(
+        "🔄 Initiating Asgardeo login with forced re-authentication..."
+      );
       // Mark this as a manual login attempt
-      sessionStorage.setItem('manual_login', 'true');
+      sessionStorage.setItem("manual_login", "true");
       // CRITICAL: Add prompt parameter to force re-authentication
-      await signIn({ prompt: 'login' });
+      await signIn({ prompt: "login" });
     } catch (err) {
       console.error("❌ Login failed:", err);
       setError("Login failed. Please try again.");
       setIsLoading(false);
       // Clear the manual login flag on error
-      sessionStorage.removeItem('manual_login');
+      sessionStorage.removeItem("manual_login");
     }
   };
 
@@ -106,17 +116,17 @@ const LoginPage = ({ onLoginSuccess, authenticated }) => {
   };
 
   // Only show welcome screen if authenticated AND manually logged in
-  const manualLogin = sessionStorage.getItem('manual_login');
-  
+  const manualLogin = sessionStorage.getItem("manual_login");
+
   // If we've already processed and notified parent, don't render anything
   if (alreadyProcessed) {
     return null; // Parent will handle rendering the main app
   }
-  
+
   // Never show welcome screen without manual login flag
-  if (manualLogin !== 'true') {
+  if (manualLogin !== "true") {
     // Fall through to show login page below
-  } else if (state?.isAuthenticated && user && manualLogin === 'true') {
+  } else if (state?.isAuthenticated && user && manualLogin === "true") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full">

@@ -41,8 +41,8 @@ export default function App() {
 
   // Check if user has manually logged in this session
   useEffect(() => {
-    const manualLogin = sessionStorage.getItem('manual_login');
-    if (manualLogin === 'true') {
+    const manualLogin = sessionStorage.getItem("manual_login");
+    if (manualLogin === "true") {
       setHasManuallyLoggedIn(true);
     }
   }, []);
@@ -52,7 +52,7 @@ export default function App() {
     console.log("✅ Login successful:", userInfo);
     setUser(userInfo);
     setHasManuallyLoggedIn(true);
-    sessionStorage.setItem('manual_login', 'true');
+    sessionStorage.setItem("manual_login", "true");
   };
 
   const handleLogout = async () => {
@@ -86,7 +86,12 @@ export default function App() {
   // Show login page if not authenticated OR if user hasn't manually logged in
   // This prevents automatic re-authentication from cached Asgardeo sessions
   if (!hasManuallyLoggedIn) {
-    return <LoginPage onLoginSuccess={handleLoginSuccess} authenticated={state?.isAuthenticated} />;
+    return (
+      <LoginPage
+        onLoginSuccess={handleLoginSuccess}
+        authenticated={state?.isAuthenticated}
+      />
+    );
   }
 
   // Show loading while checking auth
