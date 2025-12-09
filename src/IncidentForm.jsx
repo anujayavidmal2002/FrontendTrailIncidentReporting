@@ -9,8 +9,13 @@ import {
   AlertCircle,
   MapPin,
 } from "lucide-react";
-const API_URL =
-  (window.config && window.config.resourceServerURL) || "http://localhost:3001";
+const API_URL = window.config && window.config.resourceServerURL;
+if (!API_URL) {
+  alert(
+    "Backend URL is not configured! Please check your config.js and deployment."
+  );
+  throw new Error("Backend URL is not configured!");
+}
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import * as exifr from "exifr";
