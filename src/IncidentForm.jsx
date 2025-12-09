@@ -31,7 +31,7 @@ async function extractExifGps(file) {
   try {
     const exif = await exifr.parse(file, { gps: true });
     console.log(`🔍 Raw EXIF data for ${file.name}:`, exif);
-
+    // ...existing GPS extraction logic...
     if (
       exif &&
       (exif.latitude !== undefined || exif.GPSLatitude !== undefined)
@@ -39,19 +39,15 @@ async function extractExifGps(file) {
       // Try modern format first (latitude/longitude)
       let lat = exif.latitude;
       let lng = exif.longitude;
-
       // Fallback to GPSLatitude/GPSLongitude
       if (lat === undefined && exif.GPSLatitude !== undefined) {
         lat = exif.GPSLatitude;
         lng = exif.GPSLongitude;
       }
-
       // Convert to numbers
       const latNum = typeof lat === "number" ? lat : parseFloat(lat);
       const lngNum = typeof lng === "number" ? lng : parseFloat(lng);
-
       console.log(`📍 Extracted coordinates: lat=${latNum}, lng=${lngNum}`);
-
       if (!isNaN(latNum) && !isNaN(lngNum) && latNum !== 0 && lngNum !== 0) {
         console.log(`✓ Valid GPS found in ${file.name}:`, {
           lat: latNum,
@@ -338,7 +334,7 @@ export default function IncidentForm() {
         method: "POST",
         body: data,
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!r.ok) {
