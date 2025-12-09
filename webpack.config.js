@@ -1,26 +1,31 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
-require('dotenv').config();
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
-  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-  entry: './src/index.jsx',
+  mode: process.env.NODE_ENV === "production" ? "production" : "development",
+  entry: "./src/index.jsx",
   output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: process.env.NODE_ENV === 'production' ? '[name].[contenthash:8].js' : '[name].js',
-    chunkFilename: process.env.NODE_ENV === 'production' ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js',
+    path: path.resolve(__dirname, "build"),
+    filename:
+      process.env.NODE_ENV === "production"
+        ? "[name].[contenthash:8].js"
+        : "[name].js",
+    chunkFilename:
+      process.env.NODE_ENV === "production"
+        ? "[name].[contenthash:8].chunk.js"
+        : "[name].chunk.js",
     clean: true,
-    publicPath: '/',
+    publicPath: "/",
   },
   optimization: {
-    minimize: process.env.NODE_ENV === 'production',
+    minimize: process.env.NODE_ENV === "production",
     splitChunks: {
-      chunks: 'all',
+      chunks: "all",
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
+          name: "vendors",
           priority: 10,
           reuseExistingChunk: true,
         },
@@ -28,41 +33,33 @@ module.exports = {
           minChunks: 2,
           priority: 5,
           reuseExistingChunk: true,
-          name: 'common',
+          name: "common",
         },
       },
     },
-    runtimeChunk: process.env.NODE_ENV === 'production' ? 'single' : false,
+    runtimeChunk: process.env.NODE_ENV === "production" ? "single" : false,
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: { loader: 'babel-loader' },
+        use: { loader: "babel-loader" },
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg)$/,
-        type: 'asset/resource',
+        type: "asset/resource",
       },
     ],
   },
-  resolve: { extensions: ['.js', '.jsx'] },
-  plugins: [
-    new HtmlWebpackPlugin({ template: './public/index.html' }),
-    new webpack.DefinePlugin({
-      'process.env.REACT_APP_ASGARDEO_CLIENT_ID': JSON.stringify(process.env.REACT_APP_ASGARDEO_CLIENT_ID),
-      'process.env.REACT_APP_ASGARDEO_BASE_URL': JSON.stringify(process.env.REACT_APP_ASGARDEO_BASE_URL),
-      'process.env.REACT_APP_ASGARDEO_REDIRECT_URL': JSON.stringify(process.env.REACT_APP_ASGARDEO_REDIRECT_URL),
-      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL),
-    }),
-  ],
+  resolve: { extensions: [".js", ".jsx"] },
+  plugins: [new HtmlWebpackPlugin({ template: "./public/index.html" })],
   devServer: {
-    static: path.join(__dirname, 'build'),
+    static: path.join(__dirname, "build"),
     historyApiFallback: true,
     port: 3000,
     compress: true,
@@ -72,8 +69,8 @@ module.exports = {
     },
     proxy: [
       {
-        context: ['/api'],
-        target: 'http://localhost:3001',
+        context: ["/api"],
+        target: "http://localhost:3001",
         changeOrigin: true,
       },
     ],

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useAuthContext } from "@asgardeo/auth-react";
 import {
   Camera,
   Loader,
@@ -106,6 +107,7 @@ const LOCATION_MODES = {
 };
 
 export default function IncidentForm() {
+  const { getAccessToken } = useAuthContext();
   const fileRef = useRef();
   const [form, setForm] = useState({
     type: INCIDENT_TYPES[0],
@@ -331,9 +333,13 @@ export default function IncidentForm() {
     }
 
     try {
+      const token = await getAccessToken();
       const r = await fetch(`${API_URL}/incidents`, {
         method: "POST",
         body: data,
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
       });
       if (!r.ok) {
         const err = await r.json();
