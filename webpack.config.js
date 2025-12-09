@@ -57,9 +57,17 @@ module.exports = {
     ],
   },
   resolve: { extensions: [".js", ".jsx"] },
-  plugins: [new HtmlWebpackPlugin({ template: "./public/index.html" })],
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./public/index.html",
+      publicPath: "/",
+    }),
+  ],
   devServer: {
-    static: path.join(__dirname, "build"),
+    static: [
+      path.join(__dirname, "public"),
+      path.join(__dirname, "build"),
+    ],
     historyApiFallback: true,
     port: 3000,
     compress: true,

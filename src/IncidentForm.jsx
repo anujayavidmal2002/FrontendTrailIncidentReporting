@@ -9,13 +9,17 @@ import {
   AlertCircle,
   MapPin,
 } from "lucide-react";
-const API_URL = window.config && window.config.resourceServerURL;
-if (!API_URL) {
-  alert(
-    "Backend URL is not configured! Please check your config.js and deployment."
-  );
-  throw new Error("Backend URL is not configured!");
+
+// Helper function to get API URL from window.config
+function getApiUrl() {
+  if (typeof window !== "undefined" && window.config && window.config.resourceServerURL) {
+    return window.config.resourceServerURL;
+  }
+  console.warn("window.config.resourceServerURL not found; using fallback /api");
+  return "/api";
 }
+
+const API_URL = getApiUrl();
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import * as exifr from "exifr";
@@ -335,7 +339,8 @@ export default function IncidentForm() {
 
     try {
       const token = await getAccessToken();
-      const r = await fetch(`${API_URL}/incidents`, {
+      // Use /api/incidents; the fetch interceptor will prepend the backend URL
+      const r = await fetch(`/api/incidents`, {
         method: "POST",
         body: data,
         headers: {

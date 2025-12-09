@@ -178,14 +178,13 @@ export default function AdminDashboard() {
   async function fetchIncidents() {
     setLoading(true);
     try {
-      const API_URL = window.config?.resourceServerURL;
       const token = await getAccessToken();
-      const response = await fetch(`${API_URL}/api/incidents`, {
+      const response = await fetch(`/api/incidents`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await r.json();
+      const data = await response.json();
       setAllIncidents(data);
       console.log("✅ Fetched", data.length, "incidents from API");
       // Debug: Show first incident's location data

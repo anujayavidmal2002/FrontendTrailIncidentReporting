@@ -1,19 +1,52 @@
 import React, { useEffect, useState } from "react";
 
+// Initialize fetch interceptor once at module load (before component mounts)
+function initializeFetchInterceptor() {
+  if (window._fetchInterceptorInstalled) {
+    return; // Already installed
+  }
+
+  const originalFetch = window.fetch;
+
+  window.fetch = function (...args) {
+    let [url, options] = args;
+
+    // If URL starts with /api/, prepend backend URL
+    if (typeof url === "string" && url.startsWith("/api/")) {
+      const backendUrl =
+        window.config?.resourceServerURL || "http://localhost:3001";
+      const newUrl = `${backendUrl}${url}`;
+      console.log(`🔄 Redirecting API call: ${url} → ${newUrl}`);
+      url = newUrl;
+    }
+
+    return originalFetch(url, options);
+  };
+
+  window._fetchInterceptorInstalled = true;
+  console.log("✅ Fetch interceptor installed");
+}
+
+// Initialize immediately (synchronously, before React renders)
+initializeFetchInterceptor();
+
 const ConfigLoader = ({ children }) => {
   const [configLoaded, setConfigLoaded] = useState(false);
 
   useEffect(() => {
-    // Load config.js dynamically
+    // Check if config already loaded by static <script> tag in index.html
+    if (window.config) {
+      console.log("✅ Config already loaded:", window.config);
+      setConfigLoaded(true);
+      return;
+    }
+
+    // Fallback: Load config.js dynamically if not already loaded
     const script = document.createElement("script");
     script.src = "/config.js";
     script.async = false;
     script.onload = () => {
-      console.log("✅ Config loaded:", window.config);
-
-      // Set up fetch interceptor AFTER config is loaded
-      setupFetchInterceptor();
-
+      console.log("✅ Config dynamically loaded:", window.config);
       setConfigLoaded(true);
     };
     script.onerror = () => {
@@ -26,49 +59,15 @@ const ConfigLoader = ({ children }) => {
         signOutRedirectURL: "http://localhost:3000",
         resourceServerURL: "http://localhost:3001",
       };
-
-      // Set up fetch interceptor with fallback config
-      setupFetchInterceptor();
-
       setConfigLoaded(true);
     };
     document.head.appendChild(script);
 
     return () => {
-      if (script.parentNode) {
-        document.head.removeChild(script);
-      }
+      // Don't remove the script node on cleanup to avoid DOM conflicts during HMR
+      // The script has already executed; removing it won't change behavior
     };
   }, []);
-
-  // Function to set up fetch interceptor
-  const setupFetchInterceptor = () => {
-    if (window._fetchInterceptorInstalled) {
-      console.log("⚠️ Fetch interceptor already installed");
-      return;
-    }
-
-    console.log("🔧 Setting up fetch interceptor...");
-    const originalFetch = window.fetch;
-
-    window.fetch = function (...args) {
-      let [url, options] = args;
-
-      // If URL starts with /api/, prepend backend URL
-      if (typeof url === "string" && url.startsWith("/api/")) {
-        const backendUrl =
-          window.config?.resourceServerURL || "http://localhost:3001";
-        const newUrl = `${backendUrl}${url}`;
-        console.log(`🔄 Redirecting API call: ${url} → ${newUrl}`);
-        url = newUrl;
-      }
-
-      return originalFetch(url, options);
-    };
-
-    window._fetchInterceptorInstalled = true;
-    console.log("✅ Fetch interceptor installed");
-  };
 
   if (!configLoaded) {
     return (
