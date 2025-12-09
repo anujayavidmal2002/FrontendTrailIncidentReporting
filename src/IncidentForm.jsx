@@ -8,7 +8,8 @@ import {
   AlertCircle,
   MapPin,
 } from "lucide-react";
-import { API_URL } from "./App";
+const API_URL =
+  (window.config && window.config.resourceServerURL) || "http://localhost:3001";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import * as exifr from "exifr";

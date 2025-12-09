@@ -10,6 +10,10 @@ const ConfigLoader = ({ children }) => {
     script.async = false;
     script.onload = () => {
       console.log("✅ Config loaded:", window.config);
+
+      // Set up fetch interceptor AFTER config is loaded
+      setupFetchInterceptor();
+
       setConfigLoaded(true);
     };
     script.onerror = () => {
@@ -22,6 +26,10 @@ const ConfigLoader = ({ children }) => {
         signOutRedirectURL: "http://localhost:3000",
         resourceServerURL: "http://localhost:3001",
       };
+
+      // Set up fetch interceptor with fallback config
+      setupFetchInterceptor();
+
       setConfigLoaded(true);
     };
     document.head.appendChild(script);
@@ -32,6 +40,35 @@ const ConfigLoader = ({ children }) => {
       }
     };
   }, []);
+
+  // Function to set up fetch interceptor
+  const setupFetchInterceptor = () => {
+    if (window._fetchInterceptorInstalled) {
+      console.log("⚠️ Fetch interceptor already installed");
+      return;
+    }
+
+    console.log("🔧 Setting up fetch interceptor...");
+    const originalFetch = window.fetch;
+
+    window.fetch = function (...args) {
+      let [url, options] = args;
+
+      // If URL starts with /api/, prepend backend URL
+      if (typeof url === "string" && url.startsWith("/api/")) {
+        const backendUrl =
+          window.config?.resourceServerURL || "http://localhost:3001";
+        const newUrl = `${backendUrl}${url}`;
+        console.log(`🔄 Redirecting API call: ${url} → ${newUrl}`);
+        url = newUrl;
+      }
+
+      return originalFetch(url, options);
+    };
+
+    window._fetchInterceptorInstalled = true;
+    console.log("✅ Fetch interceptor installed");
+  };
 
   if (!configLoaded) {
     return (
