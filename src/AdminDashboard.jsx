@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { API_URL } from "./App";
+import { useAuthContext } from "@asgardeo/auth-react";
 import {
   Image as ImageIcon,
   MapPin,
@@ -167,6 +168,7 @@ const INCIDENT_TYPES = [
 export default function AdminDashboard() {
   const [allIncidents, setAllIncidents] = useState([]);
   const [severity, setSeverity] = useState("All");
+  const { getAccessToken } = useAuthContext();
   const [incidentType, setIncidentType] = useState("All");
   const [status, setStatus] = useState("All");
   const [loading, setLoading] = useState(true);
@@ -176,7 +178,13 @@ export default function AdminDashboard() {
   async function fetchIncidents() {
     setLoading(true);
     try {
-      const r = await fetch(`${API_URL}/incidents`);
+      const API_URL = window.config?.resourceServerURL;
+      const token = await getAccessToken();
+      const response = await fetch(`${API_URL}/api/incidents`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await r.json();
       setAllIncidents(data);
       console.log("✅ Fetched", data.length, "incidents from API");
