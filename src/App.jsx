@@ -21,7 +21,7 @@ import FundTheTrail from "./FundTheTrail";
 import Organization from "./Organization";
 
 // Use the proxy to access the backend API
-export const API_URL = window.config?.apiUrl || "/api";
+export const API_URL = window.config?.baseUrl || "/api";
 
 const VIEWS = {
   REPORT: "report",

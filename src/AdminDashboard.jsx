@@ -179,6 +179,7 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const token = await getAccessToken();
+      console.log(token);
       const response = await fetch(`${API_URL}/incidents`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -186,6 +187,7 @@ export default function AdminDashboard() {
       });
       const data = await response.json();
       setAllIncidents(data);
+      console.log(data.length);
       console.log("✅ Fetched", data, "incidents from API");
       // Debug: Show first incident's location data
       if (data.length > 0) {
