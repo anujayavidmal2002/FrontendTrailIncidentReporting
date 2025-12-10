@@ -155,52 +155,8 @@ export default function App() {
             {navOpen && <span>Report Incident</span>}
           </button>
 
-          <div className="mt-4 pt-4 border-t border-green-100">
-            <button
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition hover:bg-green-50 w-full ${
-                view === VIEWS.STAGES
-                  ? "bg-green-100 text-primary border border-green-200 shadow-sm"
-                  : "text-green-900"
-              }`}
-              onClick={() => setView(VIEWS.STAGES)}
-            >
-              <MapPin size={16} />
-              {navOpen && <span>Smart Trail Stages</span>}
-            </button>
-            <button
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition hover:bg-green-50 w-full mt-2 ${
-                view === VIEWS.POLICIES
-                  ? "bg-green-100 text-primary border border-green-200 shadow-sm"
-                  : "text-green-900"
-              }`}
-              onClick={() => setView(VIEWS.POLICIES)}
-            >
-              <FileText size={16} />
-              {navOpen && <span>Trail Policies</span>}
-            </button>
-            <button
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition hover:bg-green-50 w-full mt-2 ${
-                view === VIEWS.FUND
-                  ? "bg-green-100 text-primary border border-green-200 shadow-sm"
-                  : "text-green-900"
-              }`}
-              onClick={() => setView(VIEWS.FUND)}
-            >
-              <DollarSign size={16} />
-              {navOpen && <span>Fund the Trail</span>}
-            </button>
-            <button
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition hover:bg-green-50 w-full mt-2 ${
-                view === VIEWS.ORGANIZATION
-                  ? "bg-green-100 text-primary border border-green-200 shadow-sm"
-                  : "text-green-900"
-              }`}
-              onClick={() => setView(VIEWS.ORGANIZATION)}
-            >
-              <Building2 size={16} />
-              {navOpen && <span>The Smart Trail Organization</span>}
-            </button>
-          </div>
+
+          
 
           <div className="mt-4 pt-4 border-t border-green-100">
             <button
