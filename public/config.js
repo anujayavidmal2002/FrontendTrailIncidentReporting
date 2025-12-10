@@ -6,5 +6,5 @@ window.config = {
   clientID: "ssebnfk92ztqREI0A8cI0qNy_o0a",
   signInRedirectURL: "http://localhost:3000",
   signOutRedirectURL: "http://localhost:3000",
-  resourceServerURL: "http://localhost:3001",
+  resourceServerURL: "http://localhost:3001/api",
 };

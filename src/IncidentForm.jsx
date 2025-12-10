@@ -342,7 +342,7 @@ export default function IncidentForm() {
       const token = await getAccessToken();
       console.log("🔑 Obtained access token for submission", token);
       // Use /api/incidents; the fetch interceptor will prepend the backend URL
-      const r = await fetch(`${window.config.apiUrl}/incidents`, {
+      const r = await fetch(`${window.config.resourceServerURL}/incidents`, {
   method: "POST",
   body: data,
   headers: {
