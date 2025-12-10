@@ -186,7 +186,7 @@ export default function AdminDashboard() {
       });
       const data = await response.json();
       setAllIncidents(data);
-      console.log("✅ Fetched", data.length, "incidents from API");
+      console.log("✅ Fetched", data, "incidents from API");
       // Debug: Show first incident's location data
       if (data.length > 0) {
         console.log("🔍 First incident location data:", {
@@ -258,10 +258,11 @@ export default function AdminDashboard() {
   async function handleStatusChange(id, status) {
     console.log(`🔄 Updating incident ${id} status to: ${status}`);
     setUpdateloading(id);
+    const token = await getAccessToken();
     try {
       const response = await fetch(`${API_URL}/incidents/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}`, },
         body: JSON.stringify({ status }),
       });
       const updatedIncident = await response.json();
