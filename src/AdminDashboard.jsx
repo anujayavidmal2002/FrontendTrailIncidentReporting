@@ -179,7 +179,7 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const token = await getAccessToken();
-      const response = await fetch(`/api/incidents`, {
+      const response = await fetch(`${API_URL}/incidents`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

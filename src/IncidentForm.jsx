@@ -8,6 +8,7 @@ import {
   CheckCircle,
   AlertCircle,
   MapPin,
+  CloudCog,
 } from "lucide-react";
 
 // Helper function to get API URL from window.config
@@ -339,8 +340,9 @@ export default function IncidentForm() {
 
     try {
       const token = await getAccessToken();
+      console.log("🔑 Obtained access token for submission", token);
       // Use /api/incidents; the fetch interceptor will prepend the backend URL
-      const r = await fetch(`${window.config.resourceServerURL}/api/incidents`, {
+      const r = await fetch(`${window.config.apiUrl}/incidents`, {
   method: "POST",
   body: data,
   headers: {
