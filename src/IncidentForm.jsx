@@ -14,7 +14,7 @@ import {
 function getApiUrl() {
   if (typeof window !== "undefined" && window.config && window.config.resourceServerURL) {
     return window.config.resourceServerURL;
-  }
+  }s
   console.warn("window.config.resourceServerURL not found; using fallback /api");
   return "/api";
 }
@@ -340,13 +340,13 @@ export default function IncidentForm() {
     try {
       const token = await getAccessToken();
       // Use /api/incidents; the fetch interceptor will prepend the backend URL
-      const r = await fetch(`/api/incidents`, {
-        method: "POST",
-        body: data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const r = await fetch(`${window.config.resourceServerURL}/api/incidents`, {
+  method: "POST",
+  body: data,
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
       if (!r.ok) {
         const err = await r.json();
         throw new Error(err.error || "Submission failed");
