@@ -185,19 +185,20 @@ export default function AdminDashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await response.json();
-      setAllIncidents(data);
-      console.log(data.length);
-      console.log("✅ Fetched", data, "incidents from API");
+      const response_data = await response.json();
+      const incidents = response_data.data || response_data;
+      setAllIncidents(incidents);
+      console.log(incidents.length);
+      console.log("✅ Fetched", incidents, "incidents from API");
       // Debug: Show first incident's location data
-      if (data.length > 0) {
+      if (incidents.length > 0) {
         console.log("🔍 First incident location data:", {
-          id: data[0]._id,
-          latitude: data[0].latitude,
-          longitude: data[0].longitude,
-          locationText: data[0].locationText,
-          location: data[0].location,
-          hasPhotos: !!(data[0].photos && data[0].photos.length),
+          id: incidents[0].id,
+          latitude: incidents[0].latitude,
+          longitude: incidents[0].longitude,
+          locationText: incidents[0].locationText,
+          location: incidents[0].location,
+          hasPhotos: !!(incidents[0].photos && incidents[0].photos.length),
         });
       }
     } catch (err) {

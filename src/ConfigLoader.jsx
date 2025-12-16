@@ -41,31 +41,40 @@ const ConfigLoader = ({ children }) => {
       return;
     }
 
-    // Fallback: Load config.js dynamically if not already loaded
-    const script = document.createElement("script");
-    script.src = "/config.js";
-    script.async = false;
-    script.onload = () => {
-      console.log("✅ Config dynamically loaded:", window.config);
-      setConfigLoaded(true);
+    // Wait for config to be set by the static script tag in index.html
+    let attempts = 0;
+    const maxAttempts = 50; // ~5 seconds with 100ms intervals
+    let isMounted = true;
+
+    const checkConfig = () => {
+      if (!isMounted) return;
+
+      if (window.config) {
+        console.log("✅ Config loaded:", window.config);
+        setConfigLoaded(true);
+      } else if (attempts < maxAttempts) {
+        attempts++;
+        setTimeout(checkConfig, 100);
+      } else {
+        // Fallback: timeout reached, use default config
+        console.warn("⚠️ Config.js timeout, using defaults");
+        window.config = {
+          baseUrl: "https://api.asgardeo.io/t/trailincidents",
+          clientID: "ssebnfk92ztqREI0A8cI0qNy_o0a",
+          signInRedirectURL: "http://localhost:3000",
+          signOutRedirectURL: "http://localhost:3000",
+          resourceServerURL: "http://localhost:8000/api",
+        };
+        if (isMounted) {
+          setConfigLoaded(true);
+        }
+      }
     };
-    script.onerror = () => {
-      console.warn("⚠️ Config.js not found, using defaults");
-      // Set default config
-      window.config = {
-        baseUrl: "https://api.asgardeo.io/t/trailincidents",
-        clientID: "ssebnfk92ztqREI0A8cI0qNy_o0a",
-        signInRedirectURL: "http://localhost:3000",
-        signOutRedirectURL: "http://localhost:3000",
-        resourceServerURL: "http://localhost:3001",
-      };
-      setConfigLoaded(true);
-    };
-    document.head.appendChild(script);
+
+    checkConfig();
 
     return () => {
-      // Don't remove the script node on cleanup to avoid DOM conflicts during HMR
-      // The script has already executed; removing it won't change behavior
+      isMounted = false;
     };
   }, []);
 
