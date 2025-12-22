@@ -13,11 +13,11 @@ const getRuntimeConfig = () => {
   }
   // Default config for local development (can be overridden by config.js)
   return {
-    baseUrl: "https://api.asgardeo.io/t/trailincidents",
-    clientID: "ssebnfk92ztqREI0A8cI0qNy_o0a",
+    baseUrl: "https://api.asgardeo.io/t/choreolabs",
+    clientID: "uNGhoKNMeoYtQPQDlWH771IXbV0a",
     signInRedirectURL: window.location.origin,
     signOutRedirectURL: window.location.origin,
-    resourceServerURL: "http://localhost:3001",
+    resourceServerURL: "http://localhost:8000/api",
   };
 };
 
@@ -28,7 +28,19 @@ const asgardeoConfig = {
   baseUrl: config.baseUrl,
   signInRedirectURL: config.signInRedirectURL,
   signOutRedirectURL: config.signOutRedirectURL,
-  scope: ["openid", "profile", "email"],
+  // Add SCIM API scopes for user management
+  scope: [
+    "openid",
+    "profile",
+    "email",
+    "roles",
+    "groups",
+    "internal_user_mgt_view",    // View user accounts in the organization
+    "internal_user_mgt_list",    // Search/list user accounts in the organization
+    "internal_user_mgt_create",  // Create new user accounts in the organization
+    "internal_user_mgt_update",  // Update user accounts in the organization
+    "internal_user_mgt_delete",  // Delete user accounts in the organization
+  ],
   resourceServerURLs: [config.resourceServerURL],
   clockTolerance: 300,
   // Enable session management and proper logout

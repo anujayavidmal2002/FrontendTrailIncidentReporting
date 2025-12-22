@@ -113,7 +113,7 @@ const LOCATION_MODES = {
 };
 
 export default function IncidentForm() {
-  const { getAccessToken } = useAuthContext();
+  const { getAccessToken, getBasicUserInfo } = useAuthContext();
   const fileRef = useRef();
   const [form, setForm] = useState({
     type: INCIDENT_TYPES[0],
@@ -340,6 +340,19 @@ export default function IncidentForm() {
 
     try {
       const token = await getAccessToken();
+      // Get user info for reportedBy field using Asgardeo context
+      try {
+        const userInfo = await getBasicUserInfo();
+        if (userInfo) {
+          const reportedByName = userInfo.name || userInfo.email || userInfo.given_name || "Unknown User";
+          data.append("reportedBy", reportedByName);
+          console.log("📋 Added reportedBy:", reportedByName);
+        } else {
+          console.warn("⚠️ Could not get user info for reportedBy");
+        }
+      } catch (err) {
+        console.warn("⚠️ Error getting user info:", err.message);
+      }
       console.log("🔑 Obtained access token for submission", token);
       // Use /api/incidents; the fetch interceptor will prepend the backend URL
       const r = await fetch(`${window.config.resourceServerURL}/incidents`, {

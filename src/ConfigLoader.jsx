@@ -9,16 +9,27 @@ function initializeFetchInterceptor() {
   const originalFetch = window.fetch;
 
   window.fetch = function (...args) {
-    let [url, options] = args;
+    let [url, options = {}] = args;
 
     // If URL starts with /api/, prepend backend URL
     if (typeof url === "string" && url.startsWith("/api/")) {
       const backendUrl =
-        window.config?.resourceServerURL || "http://localhost:3001";
+        window.config?.resourceServerURL || "http://localhost:8000/api";
       const newUrl = `${backendUrl}${url}`;
       console.log(`🔄 Redirecting API call: ${url} → ${newUrl}`);
       url = newUrl;
     }
+
+    // Ensure options object exists for header manipulation
+    if (!options.headers) {
+      options.headers = {};
+    }
+
+    // Debug: Log what headers are being sent
+    console.log(`📤 Fetch request to ${url} with headers:`, {
+      hasAuth: !!options.headers?.Authorization,
+      contentType: options.headers?.["Content-Type"],
+    });
 
     return originalFetch(url, options);
   };

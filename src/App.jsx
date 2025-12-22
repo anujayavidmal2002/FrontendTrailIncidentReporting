@@ -11,14 +11,14 @@ import {
   DollarSign,
   MapPin,
   Building2,
+  Users as UsersIcon,
 } from "lucide-react";
 import IncidentForm from "./IncidentForm";
 import AdminDashboard from "./AdminDashboard";
 import LoginPage from "./LoginPage";
-import PekoeTrailStages from "./PekoeTrailStages";
-import TrailPolicies from "./TrailPolicies";
-import FundTheTrail from "./FundTheTrail";
-import Organization from "./Organization";
+
+import Users from "./Users";
+import AllUsers from "./AllUsers";
 
 // Use the proxy to access the backend API
 export const API_URL = window.config?.resourceServerURL || "/api";
@@ -26,10 +26,8 @@ export const API_URL = window.config?.resourceServerURL || "/api";
 const VIEWS = {
   REPORT: "report",
   ADMIN: "admin",
-  STAGES: "stages",
-  POLICIES: "policies",
-  FUND: "fund",
-  ORGANIZATION: "organization",
+  USERS: "users",
+  ALL_USERS: "all_users",
 };
 
 export default function App() {
@@ -154,9 +152,28 @@ export default function App() {
             <ClipboardList size={16} />
             {navOpen && <span>Report Incident</span>}
           </button>
-
-
-          
+          <button
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition hover:bg-green-50 ${
+              view === VIEWS.USERS
+                ? "bg-green-100 text-primary border border-green-200 shadow-sm"
+                : "text-green-900"
+            }`}
+            onClick={() => setView(VIEWS.USERS)}
+          >
+            <UsersIcon size={16} />
+            {navOpen && <span>My Profile</span>}
+          </button>
+          <button
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition hover:bg-green-50 ${
+              view === VIEWS.ALL_USERS
+                ? "bg-green-100 text-primary border border-green-200 shadow-sm"
+                : "text-green-900"
+            }`}
+            onClick={() => setView(VIEWS.ALL_USERS)}
+          >
+            <UsersIcon size={16} />
+            {navOpen && <span>All Users</span>}
+          </button>
 
           <div className="mt-4 pt-4 border-t border-green-100">
             <button
@@ -221,26 +238,17 @@ export default function App() {
               <AdminDashboard />
             </div>
           )}
-          {view === VIEWS.STAGES && (
-            <div className="animate-slideIn">
-              <PekoeTrailStages onBack={() => setView(VIEWS.ADMIN)} />
+          {view === VIEWS.USERS && (
+            <div className="animate-fadeIn">
+              <Users />
             </div>
           )}
-          {view === VIEWS.POLICIES && (
-            <div className="animate-slideIn">
-              <TrailPolicies onBack={() => setView(VIEWS.ADMIN)} />
+          {view === VIEWS.ALL_USERS && (
+            <div className="animate-fadeIn">
+              <AllUsers />
             </div>
           )}
-          {view === VIEWS.FUND && (
-            <div className="animate-slideIn">
-              <FundTheTrail onBack={() => setView(VIEWS.ADMIN)} />
-            </div>
-          )}
-          {view === VIEWS.ORGANIZATION && (
-            <div className="animate-slideIn">
-              <Organization onBack={() => setView(VIEWS.ADMIN)} />
-            </div>
-          )}
+
         </main>
         <footer className="text-center py-3 text-xs text-green-900 opacity-60 bg-green-100 mt-5">
           &copy; {new Date().getFullYear()} Trail Incident Reporting — Built

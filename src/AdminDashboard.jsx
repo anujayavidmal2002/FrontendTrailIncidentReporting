@@ -174,6 +174,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [updateloading, setUpdateloading] = useState(null);
   const [selectedIncidentId, setSelectedIncidentId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   async function fetchIncidents() {
     setLoading(true);
@@ -185,11 +187,33 @@ export default function AdminDashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
       const response_data = await response.json();
-      const incidents = response_data.data || response_data;
+      console.log("📦 Raw API response:", response_data);
+
+      // Handle Laravel pagination response format
+      let incidents = [];
+      if (Array.isArray(response_data)) {
+        // Direct array response
+        incidents = response_data;
+      } else if (response_data.data && Array.isArray(response_data.data)) {
+        // Paginated response with data property
+        incidents = response_data.data;
+      } else if (response_data.data && Array.isArray(Object.values(response_data.data))) {
+        // Object response with array values
+        incidents = Object.values(response_data.data);
+      } else {
+        console.warn("⚠️ Unexpected response format:", response_data);
+        incidents = [];
+      }
+
       setAllIncidents(incidents);
-      console.log(incidents.length);
-      console.log("✅ Fetched", incidents, "incidents from API");
+      console.log(`✅ Fetched ${incidents.length} incidents from API`);
+
       // Debug: Show first incident's location data
       if (incidents.length > 0) {
         console.log("🔍 First incident location data:", {
@@ -200,9 +224,11 @@ export default function AdminDashboard() {
           location: incidents[0].location,
           hasPhotos: !!(incidents[0].photos && incidents[0].photos.length),
         });
+      } else {
+        console.log("ℹ️ No incidents returned from API");
       }
     } catch (err) {
-      console.error("Failed to fetch incidents:", err);
+      console.error("❌ Failed to fetch incidents:", err);
       setAllIncidents([]);
     } finally {
       setLoading(false);
@@ -319,6 +345,7 @@ export default function AdminDashboard() {
               onChange={(e) => {
                 setIncidentType(e.target.value);
                 setSelectedIncidentId(null);
+                setCurrentPage(1);
               }}
             >
               <option value="All">All Types</option>
@@ -339,6 +366,7 @@ export default function AdminDashboard() {
               onChange={(e) => {
                 setSeverity(e.target.value);
                 setSelectedIncidentId(null);
+                setCurrentPage(1);
               }}
             >
               <option value="All">All Severities</option>
@@ -357,6 +385,7 @@ export default function AdminDashboard() {
               onChange={(e) => {
                 setStatus(e.target.value);
                 setSelectedIncidentId(null);
+                setCurrentPage(1);
               }}
             >
               <option value="All">All Status</option>
@@ -460,7 +489,16 @@ export default function AdminDashboard() {
             No incidents reported yet 🌱
           </div>
         ) : (
-          filteredIncidents().map((inc) => (
+          (() => {
+            const allFiltered = filteredIncidents();
+            const totalPages = Math.ceil(allFiltered.length / ITEMS_PER_PAGE);
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+            const paginatedIncidents = allFiltered.slice(startIndex, endIndex);
+
+            return (
+              <>
+                {paginatedIncidents.map((inc) => (
             <div
               key={inc.id}
               className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-4 transition-all duration-300 hover:shadow-2xl border-l-[6px]"
@@ -657,7 +695,61 @@ export default function AdminDashboard() {
                 )}
               </div>
             </div>
-          ))
+                ))}
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="col-span-2 flex items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-200">
+                    <div className="text-sm text-gray-600">
+                      Showing {startIndex + 1}-{Math.min(endIndex, allFiltered.length)} of {allFiltered.length} incidents
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setCurrentPage(prev => Math.max(1, prev - 1));
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition"
+                      >
+                        ← Previous
+                      </button>
+
+                      <div className="flex items-center gap-2">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                          <button
+                            key={page}
+                            onClick={() => {
+                              setCurrentPage(page);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className={`px-3 py-2 rounded-lg font-medium transition ${
+                              page === currentPage
+                                ? 'bg-primary text-white'
+                                : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        ))}
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setCurrentPage(prev => Math.min(totalPages, prev + 1));
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition"
+                      >
+                        Next →
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            );
+          })()
         )}
       </div>
     </section>
