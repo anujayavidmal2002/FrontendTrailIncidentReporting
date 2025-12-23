@@ -36,6 +36,7 @@ export default function App() {
   const [navOpen, setNavOpen] = useState(true);
   const [user, setUser] = useState(null);
   const [hasManuallyLoggedIn, setHasManuallyLoggedIn] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   // Check if user has manually logged in this session
   useEffect(() => {
@@ -45,9 +46,24 @@ export default function App() {
     }
   }, []);
 
-  // User login success handler
+  // User login success handler with Admin group check
   const handleLoginSuccess = (userInfo) => {
     console.log("✅ Login successful:", userInfo);
+
+    // Check if user is in Admin group
+    const userGroups = state?.groups || [];
+    const isAdmin = userGroups.includes("Admin") || userGroups.includes("admin");
+
+    console.log("User groups:", userGroups);
+    console.log("Is Admin:", isAdmin);
+
+    if (!isAdmin) {
+      console.error("❌ Access Denied: User is not in Admin group");
+      setAccessDenied(true);
+      handleLogout();
+      return;
+    }
+
     setUser(userInfo);
     setHasManuallyLoggedIn(true);
     sessionStorage.setItem("manual_login", "true");
@@ -88,6 +104,7 @@ export default function App() {
       <LoginPage
         onLoginSuccess={handleLoginSuccess}
         authenticated={state?.isAuthenticated}
+        accessDenied={accessDenied}
       />
     );
   }
@@ -209,11 +226,12 @@ export default function App() {
         <header className="flex items-center justify-between px-4 sm:px-6 py-4 bg-primary text-white shadow-md">
           <div className="flex items-center gap-2 text-xl font-bold">
             <Leaf className="w-7 h-7 text-green-100" />
-            <span>Trail Incident Reporting</span>
+            <span>Trail Incident Reporting - Admin</span>
           </div>
           <div className="flex items-center gap-4">
             {user && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-cent
+              er gap-2">
                 <span className="text-xs text-green-50">
                   {user.email || user.given_name || "User"}
                 </span>

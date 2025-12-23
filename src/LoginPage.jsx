@@ -2,12 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useAuthContext } from "@asgardeo/auth-react";
 import { MapPin, Shield, Camera, Loader2, LogOut } from "lucide-react";
 
-const LoginPage = ({ onLoginSuccess, authenticated }) => {
+const LoginPage = ({ onLoginSuccess, authenticated, accessDenied }) => {
   const { signIn, signOut, state } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [clearingSession, setClearingSession] = useState(false);
   const [alreadyProcessed, setAlreadyProcessed] = useState(false);
+
+  // Show access denied error
+  useEffect(() => {
+    if (accessDenied) {
+      setError("Access Denied: Only members of the Admin group can access this dashboard.");
+    }
+  }, [accessDenied]);
 
   // Check on mount if we need to clear automatic authentication
   useEffect(() => {
